@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "web-application.fullname" . }}
+  labels:
+{{ include "web-application.labels" . | indent 4 }}
+data:
+  COMPANY_NAME: {{ .Values.companyName }}

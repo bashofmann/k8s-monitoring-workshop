@@ -1,0 +1,48 @@
+# Depending on which DNS solution you have installed in your cluster enable the right exporter
+coreDns:
+  enabled: false
+
+kubeDns:
+  enabled: false
+
+kubeEtcd:
+  enabled: false
+
+kubeProxy:
+  enabled: false
+
+kubeApiServer:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false
+
+defaultRules:
+  create: false
+
+kubeScheduler:
+  enabled: false
+
+kubeStateMetrics:
+  enabled: false
+
+prometheusOperator:
+  enabled: true
+  createCustomResource: true
+  kubeletService:
+    namespace: kube-system
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  enabled: false
+
+nodeExporter:
+  enabled: false
+
+grafana:
+  enabled: false
+
+kubelet:
+  enabled: false

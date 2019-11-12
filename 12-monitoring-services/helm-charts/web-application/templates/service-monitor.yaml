@@ -1,0 +1,20 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "web-application.fullname" . }}
+  labels:
+{{ include "web-application.labels" . | indent 4 }}
+spec:
+  endpoints:
+    - interval: 30s
+      scrapeTimeout: 30s
+      port: metrics
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "web-application.name" . }}
+{{- end }}

@@ -1,0 +1,29 @@
+image:
+  tag: 8.0.1
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 512Mi
+
+metrics:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+ingress:
+  enabled: true
+  hosts:
+    - host: web-application-<YOURNAME>.k8s-monitoring.plgrnd.be
+      paths:
+        - /
+  tls:
+    - hosts:
+        - web-application-<YOURNAME>.k8s-monitoring.plgrnd.be

@@ -1,0 +1,20 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  endpoints:
+    - interval: 30s
+      scrapeTimeout: 30s
+      port: prometheus
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - <YOURNAME>
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mysql
+

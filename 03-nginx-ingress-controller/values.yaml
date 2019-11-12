@@ -1,0 +1,68 @@
+controller:
+  image:
+    tag: "0.25.1"
+
+  publishService:
+    enabled: true
+
+  extraArgs:
+    default-ssl-certificate: default/metakube-tls-certs
+
+  ## Required only if defaultBackend.enabled = false
+  ## Must be <namespace>/<service_name>
+  defaultBackendService: ""
+
+  ## Name of the ingress class to route through this controller
+  ingressClass: nginx
+
+  ## Limit the scope of the controller
+  scope:
+    enabled: false
+    namespace: ""   # defaults to .Release.Namespace
+
+  ## DaemonSet or Deployment
+  kind: Deployment
+
+  replicaCount: 3
+
+  minAvailable: 1
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+
+  metrics:
+    enabled: true
+
+    serviceMonitor:
+      enabled: false
+      additionalLabels: {}
+      namespace: ""
+
+## Default 404 backend
+defaultBackend:
+  ## If false, controller.defaultBackendService must be provided
+  enabled: true
+
+  replicaCount: 1
+
+  minAvailable: 0
+
+  resources:
+    limits:
+      cpu: 10m
+      memory: 20Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi

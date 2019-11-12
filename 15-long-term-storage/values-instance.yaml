@@ -1,0 +1,124 @@
+# Depending on which DNS solution you have installed in your cluster enable the right exporter
+coreDns:
+  enabled: true
+
+kubeDns:
+  enabled: false
+
+# The kube-controller-manager and kube-scheduler are managed and monitored by MetaKube itself
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+prometheusOperator:
+  enabled: false
+  createCustomResource: false
+  admissionWebhooks:
+    enabled: false
+
+alertmanager:
+  replicas: 1
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    hosts:
+      - alertmanager-<YOURNAME>.k8s-monitoring.plgrnd.be
+    tls:
+      - hosts:
+          - alertmanager-<YOURNAME>.k8s-monitoring.plgrnd.be
+
+prometheus:
+  prometheusSpec:
+    retention: 1h
+    replicas: 1
+    remoteRead:
+      - url: "http://m3coordinator-m3db-cluster:7201/api/v1/prom/remote/read"
+        # To test reading even when local Prometheus has the data
+        read_recent: true
+    remoteWrite:
+      - url: "http://m3coordinator-m3db-cluster:7201/api/v1/prom/remote/write"
+    remoteWriteDashboards: true
+    ruleNamespaceSelector:
+      matchExpressions:
+        - key: workshop-group
+          operator: In
+          values:
+            - <YOURNAME>
+            - nginx-ingress
+    ruleSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector:
+      matchExpressions:
+        - key: workshop-group
+          operator: In
+          values:
+            - <YOURNAME>
+            - nginx-ingress
+    serviceMonitorSelector: {}
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorNamespaceSelector:
+      matchExpressions:
+        - key: workshop-group
+          operator: In
+          values:
+            - <YOURNAME>
+            - nginx-ingress
+    podMonitorSelector: {}
+    podMonitorSelectorNilUsesHelmValues: false
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    hosts:
+      - prometheus-<YOURNAME>.k8s-monitoring.plgrnd.be
+    tls:
+      - hosts:
+          - prometheus-<YOURNAME>.k8s-monitoring.plgrnd.be
+
+defaultRules:
+  rules:
+    kubernetesResources: true
+
+nodeExporter:
+  enabled: false
+
+grafana:
+  adminPassword: admin
+  sidecar:
+    image: syseleven/k8s-sidecar:0.0.18-sys11-3
+  persistence:
+    enabled: false
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    hosts:
+      - grafana-<YOURNAME>.k8s-monitoring.plgrnd.be
+    tls:
+      - hosts:
+          - grafana-<YOURNAME>.k8s-monitoring.plgrnd.be
+  grafana.ini:
+    users:
+      auto_assign_org_role: Editor
+    auth:
+      disable_login_form: true
+    auth.basic:
+      enabled: false
+    auth.anonymous:
+      enabled: true
+      org_role: Editor
+    analytics:
+      check_for_updates: false
+
+kubelet:
+  enabled: true
+  namespace: kube-system
+
+  serviceMonitor:
+    https: true

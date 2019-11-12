@@ -1,0 +1,20 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: mysql-orchestrator
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+  namespace: mysql-operator
+spec:
+  tls:
+    - hosts:
+        - mysql-orchestrator.k8s-monitoring.plgrnd.be
+  rules:
+    - host: mysql-orchestrator.k8s-monitoring.plgrnd.be
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: mysql-operator-0-svc
+              servicePort: 80

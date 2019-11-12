@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: m3db
+  name: m3db
+spec:
+  endpoints:
+    - interval: 30s
+      metricRelabelings:
+        - sourceLabels:
+            - pod
+          targetLabel: instance
+      port: debug
+      relabelings:
+        - sourceLabels:
+            - __meta_kubernetes_service_label_operator_m3db_io_cluster
+          targetLabel: cluster
+      scrapeTimeout: 5s
+  namespaceSelector:
+    matchNames:
+      - <YOURNAME>
+  selector:
+    matchLabels:
+      operator.m3db.io/app: m3db
